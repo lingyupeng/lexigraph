@@ -1,0 +1,84 @@
+LexiGraph 使用说明
+==================
+
+【简介】
+LexiGraph 是一款词汇研究工具，可以分析单词的形态、词源，并生成学术例句。分析结果可以以3D图谱的形式可视化展示。
+
+
+【系统要求】
+- Node.js 18 或更高版本
+- 支持 macOS、Windows、Linux
+
+
+【快速开始】
+
+1. 安装 Node.js（如已安装请跳过）
+   下载地址：https://nodejs.org
+
+
+2. 解压压缩包，进入项目文件夹
+
+
+3. 安装依赖
+   - macOS/Linux：双击 START.command
+   - Windows：双击 START.bat
+   - 或手动运行：npm install
+
+
+4. 启动服务
+   - macOS：双击 START.command（会自动打开浏览器）
+   - Windows：双击 START.bat
+   - Linux/终端：运行 ./START.sh
+
+
+5. 打开浏览器访问
+   http://localhost:3000
+
+
+【配置API（可选）】
+
+默认使用内置API，可直接使用。
+
+如需使用自己的API：
+1. 复制 .env.example 为 .env
+2. 编辑 .env，填入API密钥
+3. 重启程序
+
+支持的API：
+- OpenAI（推荐）
+- MiniMax
+- Gemini
+
+
+【主要功能】
+
+- 词汇分析：输入单词，获取详细的形态、词源和学术例句
+- 3D图谱：可视化单词之间的关系
+- 领域设置：选择研究领域，影响生成内容的侧重点
+- 数据导出：支持导出为Excel格式
+
+
+【常见问题】
+
+Q: 双击START.command没反应？
+A: 需要给文件添加执行权限，终端运行：
+   chmod +x START.command
+
+Q: 端口3000被占用？
+A: 程序会自动清理端口，或手动关闭占用程序
+
+Q: 如何停止服务？
+A: 在终端按 Ctrl+C
+
+
+【文件说明】
+
+START.command - macOS一键启动
+START.bat     - Windows一键启动
+START.sh      - Linux/终端启动脚本
+.env.example  - 环境变量模板
+
+
+【技术支持】
+
+如有问题请提交Issue。
