@@ -1,0 +1,25 @@
+runtime: nodejs22
+env: standard
+instance_class: F2
+
+automatic_scaling:
+  min_instances: 1
+  max_instances: 10
+
+env_variables:
+  VITE_OPENAI_API_KEY: "sk-gDk9QFYD2wEMg6xM2A0Nyf1VMOiOLOVR0OYxwnAnSsaikjSY"
+  VITE_OPENAI_API_ENDPOINT: "https://toapis.com/v1"
+  VITE_OPENAI_MODEL: "gemini-2.0-flash-lite-official"
+  NODE_ENV: "production"
+
+handlers:
+  - url: /api/.*
+    script: auto
+    secure: always
+  - url: /.*
+    static_dir: dist
+    secure: always
+    http_headers:
+      X-Frame-Options: "DENY"
+      X-Content-Type-Options: "nosniff"
+      Referrer-Policy: "strict-origin-when-cross-origin"

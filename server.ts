@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 
-dotenv.config();
+dotenv.config();;
 
 // Load runtime config (overrides .env if exists)
 interface ApiConfig {
