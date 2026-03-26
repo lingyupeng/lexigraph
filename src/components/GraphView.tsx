@@ -36,13 +36,10 @@ export default function GraphView({ graph, primaryDomain, onDeleteNode, onViewWo
   const { t } = useLanguage();
   const fgRef = useRef<any>(null);
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
-  const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
-  const [showRoots, setShowRoots] = useState(() => {
-    return localStorage.getItem('lexigraph_show_roots') !== 'false';
-  });
-  const [showLinks, setShowLinks] = useState(() => {
-    return localStorage.getItem('lexigraph_show_links') !== 'false';
-  });
+  const [isMounted, setIsMounted] = useState(false);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [showRoots, setShowRoots] = useState(true);
+  const [showLinks, setShowLinks] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const defaultSettings: GraphSettings = {
@@ -62,19 +59,24 @@ export default function GraphView({ graph, primaryDomain, onDeleteNode, onViewWo
   };
 
   const [showSettings, setShowSettings] = useState(false);
-  const [settings, setSettings] = useState<GraphSettings>(() => {
+  const [settings, setSettings] = useState<GraphSettings>(defaultSettings);
+
+  // Mount guard - only render graph on client side to avoid SSR issues with Three.js
+  useEffect(() => {
+    setIsMounted(true);
+    setDimensions({ width: window.innerWidth, height: window.innerHeight });
+    setShowRoots(localStorage.getItem('lexigraph_show_roots') !== 'false');
+    setShowLinks(localStorage.getItem('lexigraph_show_links') !== 'false');
     const saved = localStorage.getItem('lexigraph_graph_settings');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // Merge with defaults to ensure new properties exist
-        return { ...defaultSettings, ...parsed, colors: { ...defaultSettings.colors, ...parsed.colors } };
+        setSettings({ ...defaultSettings, ...parsed, colors: { ...defaultSettings.colors, ...parsed.colors } });
       } catch {
         // ignore
       }
     }
-    return defaultSettings;
-  });
+  }, []);
 
   // Save settings to localStorage when they change
   useEffect(() => {
@@ -316,14 +318,14 @@ export default function GraphView({ graph, primaryDomain, onDeleteNode, onViewWo
     }
   }, [settings.bloomStrength, bloomPass]);
 
-  // Early return for empty graph
-  if (!graph.nodes || graph.nodes.length === 0) {
+  // Early return for empty graph or not mounted
+  if (!isMounted || !graph.nodes || graph.nodes.length === 0) {
     return (
       <div className="w-full h-full bg-black flex items-center justify-center">
         <div className="text-center text-white/50">
           <Network size={48} className="mx-auto mb-4 opacity-20" />
-          <p className="text-lg font-medium">{t('graph.noData')}</p>
-          <p className="text-sm mt-2">{t('graph.noDataHint')}</p>
+          <p className="text-lg font-medium">{isMounted ? t('graph.noData') : 'Loading...'}</p>
+          {isMounted && <p className="text-sm mt-2">{t('graph.noDataHint')}</p>}
         </div>
       </div>
     );
